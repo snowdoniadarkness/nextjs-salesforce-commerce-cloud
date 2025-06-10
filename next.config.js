@@ -1,9 +1,8 @@
-export default {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   experimental: {
-    ppr: true,
-    inlineCss: true,
     useCache: true,
-    clientSegmentCache: true,
+    largePageDataBytes: 128 * 100000
   },
   images: {
     formats: ["image/avif", "image/webp"],
@@ -19,3 +18,5 @@ export default {
     ],
   },
 };
+
+module.exports = nextConfig; 

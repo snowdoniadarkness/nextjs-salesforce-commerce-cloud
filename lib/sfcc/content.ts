@@ -1,82 +1,21 @@
-import { Menu, Page } from "./types";
+'use server';
 
-/**
- * NOTE: This function returns a hardcoded menu structure for demonstration purposes.
- * In a production application, the engineering team should update to retrieve menu content from
- * a CMS or other data source that is appropriate for the project.
- */
-export function getMenu(handle: string): Menu[] {
-  return getMenus().filter((menu) => menu.handle === handle)[0]?.links || [];
-}
-
-/**
- * NOTE: This function currently returns a hardcoded menu structure for demonstration purposes.
- * This should be replaced in a fetch to a CMS or other data source that is appropriate for the project.
- */
-export function getMenus() {
-  return [
-    {
-      handle: "next-js-frontend-footer-menu",
-      links: [
-        {
-          title: "Home",
-          path: "/",
-        },
-        {
-          title: "About",
-          path: "/about",
-        },
-        {
-          title: "Terms & Conditions",
-          path: "/terms-conditions",
-        },
-        {
-          title: "Shipping & Return Policy",
-          path: "/shipping-return-policy",
-        },
-        {
-          title: "Privacy Policy",
-          path: "/privacy-policy",
-        },
-        {
-          title: "FAQ",
-          path: "/freqently-asked-questions",
-        },
-      ],
-    },
-    {
-      handle: "next-js-frontend-header-menu",
-      links: [
-        {
-          title: "New Arrivals",
-          path: "/search/newarrivals",
-        },
-        {
-          title: "Women",
-          path: "/search/womens",
-        },
-        {
-          title: "Men",
-          path: "/search/mens",
-        },
-      ],
-    },
-  ];
-}
+import { Page } from "./types";
 
 /**
  * NOTE: This function currently returns a hardcoded page for demonstration purposes.
  * This should be replaced in a fetch to a CMS or other data source that is appropriate for the project.
  */
-export function getPage(handle: string): Page | undefined {
-  return getPages().find((page) => page.handle === handle);
+export async function getPage(handle: string): Promise<Page | undefined> {
+  const pages = await getPages();
+  return pages.find((page) => page.handle === handle);
 }
 
 /**
  * NOTE: This function currently returns hardcoded pages for demonstration purposes.
  * This should be replaced in a fetch to a CMS or other data source that is appropriate for the project.
  */
-export function getPages(): Page[] {
+export async function getPages(): Promise<Page[]> {
   return [homePage, aboutPage, termsPage, shippingPage, privacyPage, faqPage];
 }
 

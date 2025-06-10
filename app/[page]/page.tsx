@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-
 import Prose from "components/prose";
 import { getPage } from "lib/sfcc/content";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata(props: {
+export async function generateMetadata({
+  params,
+}: {
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {
-  const params = await props.params;
-  const page = await getPage(params.page);
+  const { page: pageSlug } = await params;
+  const page = await getPage(pageSlug);
 
   if (!page) return notFound();
 
@@ -23,11 +24,13 @@ export async function generateMetadata(props: {
   };
 }
 
-export default async function Page(props: {
+export default async function Page({
+  params,
+}: {
   params: Promise<{ page: string }>;
 }) {
-  const params = await props.params;
-  const page = await getPage(params.page);
+  const { page: pageSlug } = await params;
+  const page = await getPage(pageSlug);
 
   if (!page) return notFound();
 

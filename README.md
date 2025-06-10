@@ -42,4 +42,4 @@ pnpm install
 pnpm dev
 ```
 
-Your app should now be running on [localhost:3000](http://localhost:3000/).
+Your app should now be running on [localhost:3002](http://localhost:30002).

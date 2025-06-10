@@ -26,7 +26,7 @@ function ThreeItemGridItem({
         prefetch={true}
       >
         <GridTileImage
-          src={item.featuredImage.url}
+          src={item.featuredImage?.url}
           fill
           sizes={
             size === "full"
@@ -49,20 +49,33 @@ function ThreeItemGridItem({
 }
 
 export async function ThreeItemGrid() {
-  // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts({
-    collection: "hidden-homepage-featured-items",
-  });
+  try {
+    // Collections that start with `hidden-*` are hidden from the search page.
+    const homepageItems = await getCollectionProducts({
+      collection: "hidden-homepage-featured-items",
+    });
 
-  if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
+    if (!homepageItems?.length) {
+      console.warn("No homepage items found in collection 'hidden-homepage-featured-items'");
+      return null;
+    }
 
-  const [firstProduct, secondProduct, thirdProduct] = homepageItems;
+    if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) {
+      console.warn("Not enough homepage items found. Expected 3, got:", homepageItems.length);
+      return null;
+    }
 
-  return (
-    <section className="mx-auto grid max-w-(--breakpoint-2xl) gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
-      <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={thirdProduct} />
-    </section>
-  );
+    const [firstProduct, secondProduct, thirdProduct] = homepageItems;
+
+    return (
+      <section className="mx-auto grid max-w-(--breakpoint-2xl) gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
+        <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
+        <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
+        <ThreeItemGridItem size="half" item={thirdProduct} />
+      </section>
+    );
+  } catch (error) {
+    console.error("Error in ThreeItemGrid:", error);
+    return null;
+  }
 }

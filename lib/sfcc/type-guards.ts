@@ -1,3 +1,5 @@
+'use server';
+
 type SDKResponseError = {
   response?: Response;
 };

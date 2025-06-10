@@ -1,7 +1,7 @@
 "use client";
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { removeItem } from "components/cart/actions";
+import { removeItem } from "lib/sfcc/actions";
 import { CartItem } from "lib/sfcc/types";
 import { useActionState } from "react";
 

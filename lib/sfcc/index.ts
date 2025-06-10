@@ -1,3 +1,5 @@
+'use server';
+
 import {
   helpers,
   ShopperBaskets,
@@ -37,6 +39,7 @@ const apiConfig = {
     organizationId: process.env.SFCC_ORGANIZATIONID || "",
     shortCode: process.env.SFCC_SHORTCODE || "",
     siteId: process.env.SFCC_SITEID || "",
+    channelId: process.env.SFCC_CHANNELID || "",
   },
 };
 
@@ -642,27 +645,23 @@ export async function getCheckoutOrder() {
   const guestToken = (await cookies()).get("guest_token")?.value;
   const config = await getGuestUserConfig(guestToken);
 
-  if (!orderId) {
-    return;
-  }
+  if (!orderId) return;
 
   try {
-    const ordersClient = new ShopperOrders(config);
+    const orderClient = new ShopperOrders(config);
 
-    // NOTE: Need to cast to the proper type. Looks like a bug in the SDK's typedefs.
-    const order = (await ordersClient.getOrder({
+    const order = await orderClient.getOrder({
       parameters: {
         orderNo: orderId,
       },
-    })) as ShopperOrdersTypes.Order;
+    }) as unknown as ShopperOrdersTypes.Order;
+
+    if (!order?.orderNo) return;
 
     const cartItems = await getCartItems(order);
     return reshapeOrder(order, cartItems);
-  } catch (e) {
-    const sdkError = await ensureSDKResponseError(e);
-    if (sdkError) {
-      return;
-    }
-    throw e;
+  } catch (e: any) {
+    console.log(await e.response.text());
+    return;
   }
 }

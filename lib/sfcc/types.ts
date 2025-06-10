@@ -1,3 +1,5 @@
+'use server';
+
 import {
   ShopperBasketsTypes,
   ShopperProductsTypes,
@@ -174,6 +176,11 @@ export type RecommendedProduct = {
 export type Menu = {
   title: string;
   path: string;
+};
+
+export type MenuGroup = {
+  handle: string;
+  links: Menu[];
 };
 
 export type Page = {

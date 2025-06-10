@@ -1,22 +1,32 @@
+'use client';
+
+import { MenuGroup } from "@/lib/sfcc/types";
 import CartModal from "components/cart/modal";
-import LogoSquare from "components/logo-square";
-import { getMenu } from "lib/sfcc/content";
-import { Menu } from "lib/sfcc/types";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import MobileMenu from "./mobile-menu";
 import Search, { SearchSkeleton } from "./search";
 
-const { SITE_NAME } = process.env;
+interface NavbarProps {
+  menuGroups: MenuGroup[];
+  siteName: string;
+}
 
-export async function Navbar() {
-  const menu = await getMenu("next-js-frontend-header-menu");
+export default function Navbar({ menuGroups, siteName }: NavbarProps) {
+  // Transform MenuGroup[] to Menu[] for MobileMenu
+  const mobileMenuItems = menuGroups.flatMap(group => 
+    group.links.map(link => ({
+      title: link.title,
+      path: link.path
+    }))
+  );
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
         <Suspense fallback={null}>
-          <MobileMenu menu={menu} />
+          <MobileMenu menu={mobileMenuItems} />
         </Suspense>
       </div>
       <div className="flex w-full items-center">
@@ -26,21 +36,28 @@ export async function Navbar() {
             prefetch={true}
             className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
           >
-            <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {SITE_NAME}
+            <Image 
+              src="/static/img/brand-logo.png"
+              alt="Western Trail Outfitters Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto"
+              priority
+            />
+            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden">
+              {siteName}
             </div>
           </Link>
-          {menu.length ? (
+          {menuGroups.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menu.map((item: Menu) => (
-                <li key={item.title}>
+              {menuGroups.map((item: MenuGroup) => (
+                <li key={item.handle}>
                   <Link
-                    href={item.path}
+                    href={item.links[0]?.path || ''}
                     prefetch={true}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                   >
-                    {item.title}
+                    {item.links[0]?.title || ''}
                   </Link>
                 </li>
               ))}
