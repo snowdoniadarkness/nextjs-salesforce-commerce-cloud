@@ -16,7 +16,7 @@ export const addressFormSchema = z.object({
   phone: z
     .string()
     .optional()
-    .refine((val) => !val || val.replace(/\D/g, "").length >= 10, {
+    .refine(async (val) => !val || val.replace(/\D/g, "").length >= 10, {
       message: "Please enter a valid phone number",
     }),
 });
@@ -50,7 +50,7 @@ export const paymentFormSchema = z.object({
     .min(1, "Security code is required")
     .regex(/^\d{3,4}$/, "Security code must be 3-4 digits")
     .refine(
-      (val) => /^\d+$/.test(val),
+      async (val) => /^\d+$/.test(val),
       "Security code must contain only numbers",
     ),
 });
